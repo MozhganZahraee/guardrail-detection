@@ -6,3 +6,6 @@ runs/
 mlruns/
 *.zip
 dataset/
+mlflow.db
+yolov8s.pt
+

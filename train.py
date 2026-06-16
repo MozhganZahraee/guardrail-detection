@@ -5,6 +5,7 @@ import yaml
 import os
 
 # ── 1. Setup MLflow ──
+mlflow.set_tracking_uri('sqlite:///mlflow.db')
 mlflow.set_experiment("guardrail-detection")
 
 # ── 2. Load data config ──
@@ -36,7 +37,7 @@ with mlflow.start_run():
     # Train the model
     results = model.train(
         data = "dataset/data.yaml",
-        epochs = params['batchs'],
+        epochs = params['epochs'],
         imgsz = params['imgsz'],
         batch = params['batch'],
         lr0 = params['lr0'],
@@ -47,9 +48,9 @@ with mlflow.start_run():
     
     # Log metrics
     mlflow.log_metric('mAP50', results.results_dict.get('metrics/mAP50(B)', 0))
-    mlflow.log_metric('mAP50-95', results.result_dict.get('metrics/mAP50-95(B)', 0))
-    mlflow.log_metric('precision', results.result_dict.get('metrics/precision(B)', 0))
-    mlflow.log_metric("recall", results.result_dict.get('metrics/recall(B)' , 0))
+    mlflow.log_metric('mAP50-95', results.results_dict.get('metrics/mAP50-95(B)', 0))
+    mlflow.log_metric('precision', results.results_dict.get('metrics/precision(B)', 0))
+    mlflow.log_metric("recall", results.results_dict.get('metrics/recall(B)' , 0))
     
     # Save model to MLflow
     mlflow.pytorch.log_model(model.model, "guardrail_model")
