@@ -13,19 +13,19 @@ print("Model loaded successfully! ✅")
 app = Flask(__name__)
 
 # ── 3. Health check endpoint ──
-@app.route('health',method = ['GET']) 
+@app.route('/health',methods = ['GET']) 
 
 def health():
     return jsonify({'status' : 'ok'})
 
 # ── 4. Detection endpoint ──
-@app.route('detect', method = ['POST'])
+@app.route('/detect', methods = ['POST'])
 
 def detect():
     if 'image' not in request.files:
         return jsonify({'error': 'No image provided'}), 400
     file = request.files['image']
-    image = np.frombuffer(file.read(), np.unit8)
+    image = np.frombuffer(file.read(), np.int8)
     image = cv2.imdecode(image,cv2.IMREAD_COLOR)
     
     # Run detection
@@ -34,11 +34,11 @@ def detect():
     # Process results
     detections = []
     for result in results:
-        for box in result.boxs:
+        for box in result.boxes:
             detections.append({
                 'class': model.names[int(box.cls)],
                 'confidence': float(box.conf),
-                'bbox': box.xyxv[0].tolist()
+                'bbox': box.xyxy[0].tolist()
             })
     
     # Draw boxes on image

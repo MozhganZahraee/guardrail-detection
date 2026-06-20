@@ -1,0 +1,6 @@
+flask
+torch --index-url https://download.pytorch.org/whl/cpu
+numpy>=2.0.0
+ultralytics
+opencv-python
+mlflow
