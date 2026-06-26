@@ -1,13 +1,12 @@
 import os
-import torch
 from flask import Flask, request, jsonify
+from ultralytics import YOLO
 import cv2
 import base64
 import numpy as np
 
-# Load model directly with torch
-model_path = 'runs/detect/guardrail_detector/weights/best.pt'
-model = torch.hub.load('ultralytics/yolov8', 'custom', path=model_path, force_reload=False)
+# Load the trained model
+model = YOLO('runs/detect/guardrail_detector/weights/best.pt')
 print("Model loaded successfully! ✅")
 
 # Create Flask app

@@ -1,5 +1,6 @@
 flask
-opencv-python
-pillow
+torch --index-url https://download.pytorch.org/whl/cpu
 numpy>=2.0.0
-torch>=2.0.0
+ultralytics
+opencv-python
+mlflow
