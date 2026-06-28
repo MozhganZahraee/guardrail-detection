@@ -2,10 +2,8 @@ venv/
 __pycache__/
 *.pyc
 .DS_Store
-runs/
 mlruns/
 *.zip
 dataset/
 mlflow.db
 yolov8s.pt
-
