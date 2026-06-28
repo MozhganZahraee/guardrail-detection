@@ -1,23 +1,20 @@
 import os
-from flask import Flask, request, jsonify
-from ultralytics import YOLO
 import cv2
 import base64
 import numpy as np
+from flask import Flask, request, jsonify
 
-# Load the trained model
-model = YOLO('runs/detect/guardrail_detector/weights/best.pt')
+# Load model using torch.hub (no ultralytics needed)
+import torch
+model = torch.hub.load('ultralytics/yolov8', 'custom', path='runs/detect/guardrail_detector/weights/best.pt')
 print("Model loaded successfully! ✅")
 
-# Create Flask app
 app = Flask(__name__)
 
-# Health check endpoint
 @app.route('/health', methods=['GET'])
 def health():
     return jsonify({"status": "ok"})
 
-# Detection endpoint
 @app.route('/detect', methods=['POST'])
 def detect():
     if 'image' not in request.files:
@@ -27,10 +24,8 @@ def detect():
     image = np.frombuffer(file.read(), np.uint8)
     image = cv2.imdecode(image, cv2.IMREAD_COLOR)
 
-    # Run detection
     results = model(image)
 
-    # Process results
     detections = []
     for result in results:
         for box in result.boxes:
@@ -40,7 +35,6 @@ def detect():
                 "bbox": box.xyxy[0].tolist()
             })
 
-    # Draw boxes
     annotated = results[0].plot()
     _, buffer = cv2.imencode('.jpg', annotated)
     image_base64 = base64.b64encode(buffer).decode('utf-8')
